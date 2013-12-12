@@ -1,0 +1,139 @@
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <title>ManaHaven - One moment please!</title>
+        <style type="text/css" media="screen">
+            * { margin:0; padding:0 }
+            body, html { height:100%; background:#222 url('dark_stripes.png'); }
+            #main_container {
+                width:338px;
+                height:338px;
+                position:absolute;
+                left:50%;
+                top:20%;
+                margin:0 0 0 -169px;
+                z-index:11;
+            }
+            #content_bubble {
+                background:white;
+                height:160px;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                border-radius: 5px;
+                font:14px/1.4 Arial;
+                color:#333;
+                padding:20px 15px;
+                text-align:center;
+            }
+            #up_arrow {
+                width:0px;
+                height:0px;
+                border-left:10px solid transparent;  /* left arrow slant */
+                border-right:10px solid transparent; /* right arrow slant */
+                border-bottom:10px solid white; /* bottom, add background color here */
+                font-size:0px;
+                line-height:0px;
+                margin-top:-15px;
+                margin-left:auto;
+                margin-right:auto;
+            }
+            #pixel_dreamy {
+                width:600px;
+                height:400px;
+                position:absolute;
+                left:50%;
+                top:20%;
+                margin:-50px 0 0 -300px;
+                z-index:8;
+            }
+        </style>
+        <script src="jquery.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+
+                function rand (min, max) {
+                    // http://kevin.vanzonneveld.net
+                    var argc = arguments.length;
+                    if (argc === 0) {
+                        min = 0;
+                        max = 2147483647;
+                    } else if (argc === 1) {
+                        throw new Error('Warning: rand() expects exactly 2 parameters, 1 given');
+                    }
+                    return Math.floor(Math.random() * (max - min + 1)) + min;
+                }
+
+                var canvas = $('#pixel_dreamy')[0].getContext("2d");
+                var pixel_buffer = [];
+                var density = 3;
+                var frame_rate = 0;
+                var artist = {
+                    fade_circle: function(x, y, r, c) {
+                        canvas.beginPath();
+                        var rad = canvas.createRadialGradient(x, y, 0, x, y, r);
+                        rad.addColorStop(0, 'rgba('+c+',1)');
+                        rad.addColorStop(1, 'rgba('+c+',0)');
+                        canvas.fillStyle = rad;
+                        canvas.arc(x, y, r, 0, Math.PI*2, false);
+                        canvas.fill();
+                    }
+                }
+
+                return setInterval(function(){
+                    canvas.clearRect(0, 0, 600, 400);
+                    for (var i = pixel_buffer.length - 1; i >= 0; i--){
+                        if(Math.max(pixel_buffer[i]['opacity'], 0) <= 0){
+                            pixel_buffer.splice(i, 1);
+                        } else {
+                            canvas.globalAlpha = pixel_buffer[i]['opacity'];
+                            artist.fade_circle(pixel_buffer[i]['x'], pixel_buffer[i]['y'], pixel_buffer[i]['radius'], pixel_buffer[i]['color']);
+                            pixel_buffer[i]['opacity'] -= 0.02;
+                            // pixel_buffer[i]['radius'] -= 0.05;
+
+                            var frame_rate_fool = frame_rate+rand(0, 10);
+                            pixel_buffer[i]['x'] += pixel_buffer[i]['xx'];
+                            pixel_buffer[i]['y'] += ((Math.cos(frame_rate_fool % 10000) / 10000 * Math.PI * 2)*3000);
+                        }
+                    };
+
+                    var i = 0;
+                    var qx, qy;
+                    while(i < density){
+                        qx = rand(50, 250);
+                        qy = rand(45, 130);
+
+                        pixel_buffer.push({
+                            x: qx,
+                            y: qy,
+                            opacity: 0.6,
+                            radius: 3,
+                            xx: rand(-3, 3),
+                            yy: 2,
+                            color: "0, "+rand(120, 240)+", "+rand(60, 160),
+                        });
+
+                        i++;
+                    }
+                    frame_rate++;
+                }, (1000/24));
+            });
+        </script>
+    </head>
+    <body>
+        <canvas id="pixel_dreamy"></canvas>
+        <div id="main_container">
+            <div>
+                <img src="splash_logo.png" width="338" height="91" alt="Splash Logo">
+                <div id="up_arrow"></div>
+                <div id="content_bubble">
+                    <h3 style="margin-bottom:5px">We'll be back before ye' can say: </h3>
+                    <span style="background:#eee; color:#555; padding:5px 12px; font-size:12px;">Willy's real rear wheel went wonky once.</span>
+                    <br><br>
+                    <h4 style="font-family:Georgia; color:#444; margin-bottom:10px">Or...</h4>
+                    <p>While Pixeltweak plugs some new code-stuff. Fear not! The Captn' informed it shouldn't be more than a couple of hours. </p>
+                </div>
+                <div style="font-size:11px; color:#ccc; font-family:Arial; text-align:center; margin:5px 0;">Each bouncing energy represents a user being moved right now!</div>
+            </div>
+        </div>
+    </body>
+</html>
