@@ -1,12 +1,6 @@
 */config/development
 */logs/log-*.php
-<<<<<<< HEAD
 */logs/index.html
 */cache/*
 */cache/!index.html
 */cache/!.htaccess
-=======
-*/logs/!index.html
-*/cache/*
-*/cache/!index.html
->>>>>>> f8fd163f1f484e46f4ee1f3d2d444190d356c851
